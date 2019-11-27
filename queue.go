@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-const minQueueLen = 32
+const minQueueLen = 1024
 
 type Queue struct {
 	items             map[int64]interface{}

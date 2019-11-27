@@ -153,15 +153,21 @@ func TestQueueThreadSafety3(t *testing.T) {
 	wg.Add(10000)
 
 	for i := 0; i < 5000; i++ {
+		i := i
 		go func() {
 			q.Append(i)
 			wg.Done()
 		}()
 	}
 
+	m := sync.Map{}
+
 	for i := 0; i < 5000; i++ {
 		go func() {
-			q.Pop()
+			x := q.Pop()
+			if _, ok := m.LoadOrStore(x, true); ok {
+				t.Error("exist:", x)
+			}
 			wg.Done()
 		}()
 	}
