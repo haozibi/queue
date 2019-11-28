@@ -18,11 +18,16 @@ type Queue struct {
 	NotEmpty chan struct{}
 }
 
-func New() *Queue {
+func New(length ...int) *Queue {
+	l := minQueueLen
+	if len(length) > 0 {
+		l = length[0]
+	}
+
 	q := &Queue{
 		items:    make(map[int64]interface{}),
 		ids:      make(map[interface{}]int64),
-		buf:      make([]int64, minQueueLen),
+		buf:      make([]int64, l),
 		mutex:    &sync.Mutex{},
 		NotEmpty: make(chan struct{}, 1),
 	}
